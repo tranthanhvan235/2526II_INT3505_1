@@ -1,10 +1,10 @@
 {
   "name": "2526ii_int3505_1",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,6 @@
   "homepage": "https://github.com/tranthanhvan235/2526II_INT3505_1#readme",
   "dependencies": {
     "express": "^5.2.1"
-  }
+  },
+  "description": ""
 }
