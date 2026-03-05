@@ -1,0 +1,23 @@
+{
+  "name": "2526ii_int3505_1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tranthanhvan235/2526II_INT3505_1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tranthanhvan235/2526II_INT3505_1/issues"
+  },
+  "homepage": "https://github.com/tranthanhvan235/2526II_INT3505_1#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
