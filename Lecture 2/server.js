@@ -8,12 +8,12 @@ let users = [
   { id: 2, name: "Tran Thi B", email: "b@gmail.com" }
 ];
 
-// 1. Lay danh sach nguoi dung
+
 app.get("/api/users", (req, res) => {
   res.json(users);
 });
 
-// 2. Lay thong tin 1 nguoi dung
+
 app.get("/api/users/:id", (req, res) => {
   const user = users.find(u => u.id == req.params.id);
 
@@ -24,7 +24,7 @@ app.get("/api/users/:id", (req, res) => {
   res.json(user);
 });
 
-// 3. Tao user moi
+
 app.post("/api/users", (req, res) => {
   const newUser = {
     id: users.length + 1,
@@ -36,7 +36,7 @@ app.post("/api/users", (req, res) => {
   res.status(201).json(newUser);
 });
 
-// 4. Cap nhat email
+
 app.put("/api/users/:id", (req, res) => {
   const user = users.find(u => u.id == req.params.id);
 
@@ -49,7 +49,7 @@ app.put("/api/users/:id", (req, res) => {
   res.json(user);
 });
 
-// 5. Xoa user
+
 app.delete("/api/users/:id", (req, res) => {
   const index = users.findIndex(u => u.id == req.params.id);
 
@@ -61,12 +61,12 @@ app.delete("/api/users/:id", (req, res) => {
   res.json({ message: "User deleted" });
 });
 
-// Demo loi 500
+
 app.get("/api/error", (req, res) => {
   throw new Error("Internal Server Error Demo");
 });
 
-// Demo loi 429 (rate limit gia lap)
+
 let requestCount = 0;
 
 app.get("/api/limited", (req, res) => {
