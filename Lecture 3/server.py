@@ -63,5 +63,9 @@ def get_user_orders(user_id):
 
     return jsonify(user_orders)
 
+@app.route("/api/v1/orders", methods=["GET"])
+def get_orders():
+    return jsonify(orders)
+
 if __name__ == "__main__":
     app.run(debug=True, port=3005)
