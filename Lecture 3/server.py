@@ -55,5 +55,13 @@ def delete_user(user_id):
 
     return jsonify({"message": "deleted"})
 
+
+@app.route("/users/<int:user_id>/orders", methods=["GET"])
+def get_user_orders(user_id):
+
+    user_orders = [o for o in orders if o["user_id"] == user_id]
+
+    return jsonify(user_orders)
+
 if __name__ == "__main__":
     app.run(debug=True, port=3005)
