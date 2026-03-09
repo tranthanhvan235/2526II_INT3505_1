@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, make_response
+import time
 
 app = Flask(__name__)
 
@@ -11,8 +12,8 @@ users = [
 
 @app.route("/users", methods=["GET"])
 def get_users():
+    print("Server request at:", time.time())
     response = make_response(jsonify(users))
-
     response.headers["Cache-Control"] = "public, max-age=60"
     return response
 

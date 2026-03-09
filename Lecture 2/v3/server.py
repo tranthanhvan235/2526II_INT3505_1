@@ -9,6 +9,17 @@ users = [
     {"id": 3, "name": "Vinh"}
 ]
 
+items = [
+    {"id": 1, "items": "lipstick"},
+    {"id": 2, "items": "snack"},
+    {"id": 3, "items": "iphone17"}
+]
+user_items = [
+    {"user_id": 1, "item_id": 1},
+    {"user_id": 1, "item_id": 3},
+    {"user_id": 2, "item_id": 2},
+]
+
 @app.route("/users", methods=["GET"])
 def get_users():
     return jsonify(users)
@@ -41,20 +52,29 @@ def delete_user(id):
     users = [u for u in users if u["id"] != id]
     return {"message":"deleted"}
 
-@app.route("/profile", methods=["GET"])
-def get_profile():
-    user_id = request.args.get("user_id")
-
-    if not user_id:
-        return {"message": "Missing user_id"}, 400
-
-    user_id = int(user_id)
-
+@app.route("/users/<int:user_id>/items", methods=["GET"])
+def get_user_items(user_id):
+    user = None
     for u in users:
         if u["id"] == user_id:
-            return jsonify(u)
-        
-    return {"message": "User not found"}, 404
+            user = u
+            break
+
+    if not user:
+        return {"message": "User not found"}, 404
+
+    owned_items = []
+
+    for ui in user_items:
+        if ui["user_id"] == user_id:
+            for item in items:
+                if item["id"] == ui["item_id"]:
+                    owned_items.append(item)
+    
+    return jsonify({
+        "user": user,
+        "items": owned_items
+    })   
 
 if __name__ == "__main__":
     app.run(debug=True, port=2305)
