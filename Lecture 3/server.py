@@ -18,6 +18,20 @@ orders = [
 def get_users():
     return jsonify(users)
 
+@app.route("/users", methods=["POST"])
+def create_user():
+
+    data = request.json
+
+    new_user = {
+        "id": len(users) + 1,
+        "name": data["name"]
+    }
+
+    users.append(new_user)
+
+    return jsonify(new_user)
+
 @app.route("/users/<int:id>", methods=["GET"])
 def get_user(id):
     for u in users:
@@ -32,5 +46,14 @@ def get_orders(id):
             return jsonify(u)
     return {"message": "User not found"}, 404
 
+@app.route("/users/<int:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+
+    global users
+
+    users = [u for u in users if u["id"] != user_id]
+
+    return jsonify({"message": "deleted"})
+
 if __name__ == "__main__":
-    app.run(debug=True, port=3333)
+    app.run(debug=True, port=3005)
