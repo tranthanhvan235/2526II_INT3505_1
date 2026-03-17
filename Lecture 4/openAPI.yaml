@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: Book Management API
+  version: 1.0.0
+  description: A simple CRUD API for managing a library, designed for the SOA course.
+
+paths:
+  /books:
+    get:
+      summary: List all books
+      responses:
+        '200':
+          description: A list of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    post:
+      summary: Create a new book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '201':
+          description: Book created successfully
+
+  /books/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get book details by ID
+      responses:
+        '200':
+          description: Book found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Book not found
+    put:
+      summary: Update an existing book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          description: Book updated
+    delete:
+      summary: Remove a book from the library
+      responses:
+        '204':
+          description: Book deleted (No content)
+
+components:
+  schemas:
+    Book:
+      type: object
+      required:
+        - title
+        - author
+      properties:
+        id:
+          type: string
+          example: "BK-2302"
+        title:
+          type: string
+          example: "API Design Patterns"
+        author:
+          type: string
+          example: "J.J. Geewax"
+        publishedYear:
+          type: integer
+          example: 2021
