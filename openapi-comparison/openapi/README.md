@@ -11,5 +11,5 @@
 
 ```bash
 npm install -g swagger-ui-cli
-swagger-ui serve openapi.yaml
+swagger-ui-cli serve openapi.yaml
 ```

@@ -6,18 +6,72 @@ HOST: http://localhost:8080
 ## Books [/books]
 
 ### Get all books [GET]
+
 + Response 200 (application/json)
 
+        [
+          {
+            "id": "BK-2302",
+            "title": "API Design Patterns",
+            "author": "J.J. Geewax",
+            "publishedYear": 2021
+          }
+        ]
+
 ### Create a book [POST]
-+ Response 201
+
++ Request (application/json)
+
+        {
+          "title": "Clean Code",
+          "author": "Robert C. Martin",
+          "publishedYear": 2008
+        }
+
++ Response 201 (application/json)
+
+        {
+          "id": "BK-0003",
+          "title": "Clean Code",
+          "author": "Robert C. Martin",
+          "publishedYear": 2008
+        }
+
+---
 
 ## Book [/books/{id}]
 
++ Parameters
+    + id: BK-2302 (string) - ID of the book
+
 ### Get book [GET]
-+ Response 200
+
++ Response 200 (application/json)
+
+        {
+          "id": "BK-2302",
+          "title": "API Design Patterns",
+          "author": "J.J. Geewax",
+          "publishedYear": 2021
+        }
 
 ### Update book [PUT]
-+ Response 200
+
++ Request (application/json)
+
+        {
+          "title": "Updated Title"
+        }
+
++ Response 200 (application/json)
+
+        {
+          "id": "BK-2302",
+          "title": "Updated Title",
+          "author": "J.J. Geewax",
+          "publishedYear": 2021
+        }
 
 ### Delete book [DELETE]
+
 + Response 204

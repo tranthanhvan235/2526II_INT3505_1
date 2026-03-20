@@ -1,37 +1,94 @@
 openapi: 3.0.0
 info:
-  title: Book API
+  title: Book Management API
   version: 1.0.0
+  description: A simple CRUD API for managing a library, designed for the SOA course.
 
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://2526-ii-int-3505-1-three.vercel.app
+    description: Deployed server on Vercel
 paths:
   /books:
     get:
-      summary: Get all books
+      summary: List all books
       responses:
         '200':
-          description: OK
+          description: A list of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
 
     post:
-      summary: Create book
+      summary: Create a new book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
       responses:
         '201':
-          description: Created
+          description: Book created successfully
 
-  /books/{id}:
+  /books/{book_id}:
+    parameters:
+      - name: book_id
+        in: path
+        required: true
+        schema:
+          type: string
+
     get:
-      summary: Get book by ID
+      summary: Get book details by ID
       responses:
         '200':
-          description: OK
+          description: Book found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Book not found
 
     put:
-      summary: Update book
+      summary: Update an existing book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
       responses:
         '200':
-          description: Updated
+          description: Book updated
 
     delete:
-      summary: Delete book
+      summary: Remove a book from the library
       responses:
         '204':
-          description: Deleted
+          description: Book deleted
+
+components:
+  schemas:
+    Book:
+      type: object
+      required:
+        - title
+        - author
+      properties:
+        id:
+          type: string
+          example: "BK-2302"
+        title:
+          type: string
+          example: "API Design Patterns"
+        author:
+          type: string
+          example: "J.J. Geewax"
+        publishedYear:
+          type: integer
+          example: 2021

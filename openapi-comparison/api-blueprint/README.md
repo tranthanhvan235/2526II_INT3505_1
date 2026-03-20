@@ -4,5 +4,5 @@
 
 ```bash
 npm install -g aglio
-aglio -i api.apib -s
+npx aglio -i api.apib -s -p 4000
 ```

@@ -32,4 +32,4 @@
 ## 🛠 Khắc phục lỗi thường gặp
 
 - Lỗi 500: check logs Vercel, đảm bảo `requirements.txt` đúng và `vercel.json` có `builds` + `routes`.
-- Lỗi 404 với `apidocs`: dùng URL `/apidocs/` trên Vercel và Python package `flasgger` đã cài.
+- Lỗi 404 với `docs`: dùng URL `/docs/` trên Vercel và Python package `flasgger` đã cài.
