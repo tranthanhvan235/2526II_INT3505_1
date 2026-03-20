@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request, abort
 from flasgger import Swagger
 
 app = Flask(__name__)
-# This line enables Swagger UI at http://localhost:5000/apidocs
 swagger = Swagger(app)
 
 # In-memory database for demonstration
@@ -133,6 +132,11 @@ def delete_book(book_id):
     global books
     books = [b for b in books if b['id'] != book_id]
     return '', 204
+
+
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"message": "Welcome to the Book API"})
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
