@@ -1,2 +1,3 @@
-flask
-flasgger
+Flask==2.3.3
+flask-swagger-ui==4.11.1
+PyYAML==6.0.1

@@ -1,8 +1,13 @@
 from flask import Flask, jsonify, request, abort
-from flasgger import Swagger
+from flask_swagger_ui import get_swaggerui_blueprint
+import yaml, os
 
 app = Flask(__name__)
-swagger = Swagger(app)
+
+yaml_path = os.path.join(os.path.dirname(__file__), 'api/openAPI.yaml')
+
+with open(yaml_path) as f:
+    openapi_spec = yaml.safe_load(f)
 
 # In-memory database for demonstration
 books = [
@@ -13,41 +18,11 @@ books = [
 # 1. GET ALL BOOKS
 @app.route('/books', methods=['GET'])
 def get_books():
-    """
-    List all books
-    ---
-    responses:
-      200:
-        description: A list of books
-    """
     return jsonify(books), 200
 
 # 2. POST NEW BOOK
 @app.route('/books', methods=['POST'])
 def create_book():
-    """
-    Create a new book
-    ---
-    parameters:
-      - name: body
-        in: body
-        required: true
-        schema:
-          id: Book
-          required:
-            - title
-            - author
-          properties:
-            title:
-              type: string
-            author:
-              type: string
-            publishedYear:
-              type: integer
-    responses:
-      201:
-        description: Book created successfully
-    """
     if not request.json or 'title' not in request.json:
         abort(400)
     
@@ -63,20 +38,6 @@ def create_book():
 # 3. GET BOOK BY ID
 @app.route('/books/<string:book_id>', methods=['GET'])
 def get_book(book_id):
-    """
-    Get book details by ID
-    ---
-    parameters:
-      - name: book_id
-        in: path
-        type: string
-        required: true
-    responses:
-      200:
-        description: Book found
-      404:
-        description: Book not found
-    """
     book = next((b for b in books if b['id'] == book_id), None)
     if book is None:
         abort(404)
@@ -85,23 +46,6 @@ def get_book(book_id):
 # 4. UPDATE BOOK
 @app.route('/books/<string:book_id>', methods=['PUT'])
 def update_book(book_id):
-    """
-    Update an existing book
-    ---
-    parameters:
-      - name: book_id
-        in: path
-        type: string
-        required: true
-      - name: body
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/Book'
-    responses:
-      200:
-        description: Book updated
-    """
     book = next((b for b in books if b['id'] == book_id), None)
     if book is None:
         abort(404)
@@ -114,26 +58,26 @@ def update_book(book_id):
 # 5. DELETE BOOK
 @app.route('/books/<string:book_id>', methods=['DELETE'])
 def delete_book(book_id):
-    """
-    Remove a book from the library
-    ---
-    parameters:
-      - name: book_id
-        in: path
-        type: string
-        required: true
-    responses:
-      204:
-        description: Book deleted
-    """
     global books
     books = [b for b in books if b['id'] != book_id]
     return '', 204
 
 
-@app.route('/', methods=['GET'])
-def home():
-    return jsonify({"message": "Welcome to the Book API"})
+@app.route("/openapi.json")
+def openapi_json():
+    return jsonify(openapi_spec)
+
+SWAGGER_URL = '/docs'
+API_URL = '/openapi.json'
+
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "Book API"
+    }
+)
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
