@@ -1,0 +1,37 @@
+openapi: 3.0.0
+info:
+  title: Book API
+  version: 1.0.0
+
+paths:
+  /books:
+    get:
+      summary: Get all books
+      responses:
+        '200':
+          description: OK
+
+    post:
+      summary: Create book
+      responses:
+        '201':
+          description: Created
+
+  /books/{id}:
+    get:
+      summary: Get book by ID
+      responses:
+        '200':
+          description: OK
+
+    put:
+      summary: Update book
+      responses:
+        '200':
+          description: Updated
+
+    delete:
+      summary: Delete book
+      responses:
+        '204':
+          description: Deleted
