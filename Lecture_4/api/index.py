@@ -4,7 +4,7 @@ import yaml, os
 
 app = Flask(__name__)
 
-yaml_path = os.path.join(os.path.dirname(__file__), 'api/openAPI.yaml')
+yaml_path = os.path.join(os.path.dirname(__file__), 'openAPI.yaml')
 
 with open(yaml_path) as f:
     openapi_spec = yaml.safe_load(f)
