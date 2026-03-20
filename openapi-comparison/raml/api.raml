@@ -1,0 +1,18 @@
+#%RAML 1.0
+title: Book API
+version: v1
+baseUri: http://localhost:8080
+
+/books:
+  get:
+    description: Get all books
+  post:
+    description: Create book
+
+/books/{id}:
+  get:
+    description: Get book
+  put:
+    description: Update book
+  delete:
+    description: Delete book
