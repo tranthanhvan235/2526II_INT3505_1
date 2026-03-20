@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, request, abort
 from flask_swagger_ui import get_swaggerui_blueprint
+from flask_cors import CORS
 import yaml, os
-
 app = Flask(__name__)
+
+CORS(app)
 
 yaml_path = os.path.join(os.path.dirname(__file__), 'openAPI.yaml')
 
