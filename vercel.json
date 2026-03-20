@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "Lecture 4/api/index.py",
+      "src": "Lecture_4/api/index.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "Lecture 4/api/index.py"
+      "dest": "Lecture_4/api/index.py"
     }
   ]
 }
