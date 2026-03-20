@@ -7,7 +7,7 @@ info:
 servers:
   - url: http://localhost:8080
     description: Local development server
-  - url: https://2526-ii-int-3505-1-three.vercel.app/docs/
+  - url: https://2526-ii-int-3505-1-three.vercel.app
     description: Deployed server on Vercel
 paths:
   /books:
