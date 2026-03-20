@@ -10,9 +10,6 @@ books = [
     {"id": "BK-0002", "title": "Clean Code", "author": "Robert C. Martin", "publishedYear": 2008}
 ]
 
-def handler(request, context):
-    return app(request.environ, lambda *args: None)
-    
 # 1. GET ALL BOOKS
 @app.route('/books', methods=['GET'])
 def get_books():
