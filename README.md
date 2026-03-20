@@ -4,7 +4,7 @@
 
 Ứng dụng đã deploy trên Vercel:
 - https://2526-ii-int-3505-1-three.vercel.app
-- OpenAPI UI: https://2526-ii-int-3505-1-three.vercel.app/apidocs/
+- OpenAPI UI: https://2526-ii-int-3505-1-three.vercel.app/docs/
 
 ## 📦 Cấu trúc chính
 

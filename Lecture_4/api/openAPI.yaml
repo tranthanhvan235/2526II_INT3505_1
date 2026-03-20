@@ -3,9 +3,12 @@ info:
   title: Book Management API
   version: 1.0.0
   description: A simple CRUD API for managing a library, designed for the SOA course.
+
 servers:
-  - url: http://localhost:8080/api
+  - url: http://localhost:8080
     description: Local development server
+  - url: https://2526-ii-int-3505-1-three.vercel.app/docs/
+    description: Deployed server on Vercel
 paths:
   /books:
     get:
@@ -19,6 +22,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Book'
+
     post:
       summary: Create a new book
       requestBody:
@@ -31,13 +35,14 @@ paths:
         '201':
           description: Book created successfully
 
-  /books/{id}:
+  /books/{book_id}:
     parameters:
-      - name: id
+      - name: book_id
         in: path
         required: true
         schema:
           type: string
+
     get:
       summary: Get book details by ID
       responses:
@@ -49,6 +54,7 @@ paths:
                 $ref: '#/components/schemas/Book'
         '404':
           description: Book not found
+
     put:
       summary: Update an existing book
       requestBody:
@@ -59,11 +65,12 @@ paths:
       responses:
         '200':
           description: Book updated
+
     delete:
       summary: Remove a book from the library
       responses:
         '204':
-          description: Book deleted (No content)
+          description: Book deleted
 
 components:
   schemas:
