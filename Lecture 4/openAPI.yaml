@@ -3,7 +3,9 @@ info:
   title: Book Management API
   version: 1.0.0
   description: A simple CRUD API for managing a library, designed for the SOA course.
-
+servers:
+  - url: http://localhost:8080/api
+    description: Local development server
 paths:
   /books:
     get:
