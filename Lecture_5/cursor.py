@@ -1,4 +1,3 @@
-# demo4_cursor.py
 from flask import Flask, request, jsonify
 from database_setup import db, Book
 
