@@ -1,4 +1,3 @@
-# demo2_search.py
 from flask import Flask, request, jsonify
 from database_setup import db, Book
 
