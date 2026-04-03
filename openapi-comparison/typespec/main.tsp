@@ -2,17 +2,29 @@ import "@typespec/http";
 
 using Http;
 
+@service({ title: "Book API" })
 @route("/books")
 namespace BookAPI {
 
-  @get op listBooks(): string[];
+  model Book {
+    id: string;
+    title: string;
+    author: string;
+  }
 
-  @post op createBook(): string;
+  @get
+  op listBooks(): Book[];
+
+  @post
+  op createBook(@body book: Book): Book;
 
   @route("/{id}")
-  @get op getBook(@path id: string): string;
+  @get
+  op getBook(@path id: string): Book;
 
-  @put op updateBook(@path id: string): string;
+  @put
+  op updateBook(@path id: string, @body book: Book): Book;
 
-  @delete op deleteBook(@path id: string): void;
+  @delete
+  op deleteBook(@path id: string): void;
 }
