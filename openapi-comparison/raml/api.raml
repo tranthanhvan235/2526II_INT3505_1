@@ -1,18 +1,58 @@
 #%RAML 1.0
 title: Book API
 version: v1
-baseUri: http://localhost:8080
+baseUri: http://localhost:3000
 
 /books:
   get:
     description: Get all books
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              [
+                { "id": 1, "title": "Book A" },
+                { "id": 2, "title": "Book B" }
+              ]
+
   post:
     description: Create book
+    body:
+      application/json:
+        example:
+          { "title": "New Book" }
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              { "id": 3, "title": "New Book" }
 
 /books/{id}:
   get:
     description: Get book
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              { "id": 1, "title": "Book A" }
+
   put:
     description: Update book
+    body:
+      application/json:
+        example:
+          { "title": "Updated Book" }
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              { "id": 1, "title": "Updated Book" }
+
   delete:
     description: Delete book
+    responses:
+      204:
