@@ -1,0 +1,125 @@
+openapi: 3.0.0
+info:
+  description: "A simple CRUD API for managing a library, designed for the SOA course."
+  title: Book Management API
+  version: 1.0.0
+servers:
+- description: Local development server
+  url: http://localhost:8080
+- description: Deployed server on Vercel
+  url: https://2526-ii-int-3505-1-three.vercel.app
+paths:
+  /books:
+    get:
+      operationId: books_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Book"
+                type: array
+          description: A list of books
+      summary: List all books
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    post:
+      operationId: books_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+        required: true
+      responses:
+        "201":
+          description: Book created successfully
+      summary: Create a new book
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /books/{book_id}:
+    delete:
+      operationId: books_book_id_delete
+      parameters:
+      - explode: false
+        in: path
+        name: book_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Book deleted
+      summary: Remove a book from the library
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    get:
+      operationId: books_book_id_get
+      parameters:
+      - explode: false
+        in: path
+        name: book_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Book found
+        "404":
+          description: Book not found
+      summary: Get book details by ID
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    put:
+      operationId: books_book_id_put
+      parameters:
+      - explode: false
+        in: path
+        name: book_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        "200":
+          description: Book updated
+      summary: Update an existing book
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  schemas:
+    Book:
+      example:
+        author: J.J. Geewax
+        id: BK-2302
+        publishedYear: 2021
+        title: API Design Patterns
+      properties:
+        id:
+          example: BK-2302
+          title: id
+          type: string
+        title:
+          example: API Design Patterns
+          title: title
+          type: string
+        author:
+          example: J.J. Geewax
+          title: author
+          type: string
+        publishedYear:
+          example: 2021
+          title: publishedYear
+          type: integer
+      required:
+      - author
+      - title
+      title: Book
+      type: object
