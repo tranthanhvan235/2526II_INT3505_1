@@ -1,0 +1,319 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "",
+    "title": "Book API",
+    "version": ""
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/"
+    }
+  ],
+  "paths": {
+    "/books": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "author": "J.J. Geewax",
+                        "id": "BK-2302",
+                        "publishedYear": 2021,
+                        "title": "API Design Patterns"
+                      }
+                    ]
+                  }
+                },
+                "schema": {
+                  "example": [
+                    {
+                      "author": "J.J. Geewax",
+                      "id": "BK-2302",
+                      "publishedYear": 2021,
+                      "title": "API Design Patterns"
+                    }
+                  ],
+                  "items": {
+                    "properties": {
+                      "author": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "publishedYear": {
+                        "type": "number"
+                      },
+                      "title": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          }
+        },
+        "tags": [],
+        "description": "",
+        "operationId": "Get all books",
+        "summary": "Get all books"
+      },
+      "post": {
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "author": "Robert C. Martin",
+                      "id": "BK-0003",
+                      "publishedYear": 2008,
+                      "title": "Clean Code"
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "author": "Robert C. Martin",
+                    "id": "BK-0003",
+                    "publishedYear": 2008,
+                    "title": "Clean Code"
+                  },
+                  "properties": {
+                    "author": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "publishedYear": {
+                      "type": "number"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Created",
+            "headers": {}
+          }
+        },
+        "tags": [],
+        "description": "",
+        "operationId": "Create a book",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "author": "Robert C. Martin",
+                  "publishedYear": 2008,
+                  "title": "Clean Code"
+                },
+                "properties": {
+                  "author": {
+                    "type": "string"
+                  },
+                  "publishedYear": {
+                    "type": "number"
+                  },
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Create a book"
+      }
+    },
+    "/books/{id}": {
+      "delete": {
+        "parameters": [
+          {
+            "description": "2302 (string) - ID of the book",
+            "example": "BK",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {}
+          }
+        },
+        "tags": [],
+        "description": "",
+        "operationId": "Delete book",
+        "summary": "Delete book"
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "2302 (string) - ID of the book",
+            "example": "BK",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "author": "J.J. Geewax",
+                      "id": "BK-2302",
+                      "publishedYear": 2021,
+                      "title": "API Design Patterns"
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "author": "J.J. Geewax",
+                    "id": "BK-2302",
+                    "publishedYear": 2021,
+                    "title": "API Design Patterns"
+                  },
+                  "properties": {
+                    "author": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "publishedYear": {
+                      "type": "number"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          }
+        },
+        "tags": [],
+        "description": "",
+        "operationId": "Get book",
+        "summary": "Get book"
+      },
+      "put": {
+        "parameters": [
+          {
+            "description": "2302 (string) - ID of the book",
+            "example": "BK",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "author": "J.J. Geewax",
+                      "id": "BK-2302",
+                      "publishedYear": 2021,
+                      "title": "Updated Title"
+                    }
+                  }
+                },
+                "schema": {
+                  "example": {
+                    "author": "J.J. Geewax",
+                    "id": "BK-2302",
+                    "publishedYear": 2021,
+                    "title": "Updated Title"
+                  },
+                  "properties": {
+                    "author": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "publishedYear": {
+                      "type": "number"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {}
+          }
+        },
+        "tags": [],
+        "description": "",
+        "operationId": "Update book",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "title": "Updated Title"
+                },
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "summary": "Update book"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Book": {},
+      "Books": {}
+    }
+  },
+  "tags": []
+}

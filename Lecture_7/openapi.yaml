@@ -1,0 +1,483 @@
+openapi: 3.0.3
+info:
+  title: Book Management API
+  description:
+    RESTful API for the Book Management application. 
+    Supports managing Books, Authors, Categories, and User Authentication (JWT).
+    This documentation is highly detailed and structurally optimized for automatic backend code generation (Spring Boot, NestJS, Go, Python, etc.).
+  version: 1.0.0
+  contact:
+    name:  Team 6
+    email: dev_team_6@soa.com
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local Development Server
+  - url: https://staging.example.com/api/v1
+    description: Staging Server
+
+tags:
+  - name: Auth
+    description: Authentication and Authorization operations
+  - name: Books
+    description: Book management operations
+  - name: Authors
+    description: Author management operations
+
+# Enable default JWT security for the entire API (Public APIs will override this)
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: User Login
+      description: Authenticate using email and password to receive a JWT Access Token.
+      operationId: login
+      security: [] 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+
+ 
+  /books:
+    get:
+      tags:
+        - Books
+      summary: Get all books
+      description: Retrieve a paginated list of books with search and filter capabilities.
+      operationId: getBooks
+      security: [] 
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: search
+          in: query
+          description: Search by book title or ISBN
+          required: false
+          schema:
+            type: string
+        - name: categoryId
+          in: query
+          description: Filter books by Category ID
+          required: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved the list of books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookListResponse'
+    post:
+      tags:
+        - Books
+      summary: Create a new book
+      description: Add a new book to the catalog (Admin privileges required).
+      operationId: createBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /books/{id}:
+    get:
+      tags:
+        - Books
+      summary: Get book details
+      description: Retrieve detailed information of a specific book by its ID.
+      operationId: getBookById
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/IdPathParam'
+      responses:
+        '200':
+          description: Successfully retrieved book details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    
+    put:
+      tags:
+        - Books
+      summary: Update a book
+      description: Update information of an existing book by its ID (Admin privileges required).
+      operationId: updateBook
+      parameters:
+        - $ref: '#/components/parameters/IdPathParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+      responses:
+        '200':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    delete:
+      tags:
+        - Books
+      summary: Delete a book
+      description: Remove a book from the system completely (Admin privileges required).
+      operationId: deleteBook
+      parameters:
+        - $ref: '#/components/parameters/IdPathParam'
+      responses:
+        '204':
+          description: Successfully deleted (No content returned)
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /authors:
+    get:
+      tags:
+        - Authors
+      summary: Get all authors
+      description: Retrieve a paginated list of authors.
+      operationId: getAuthors
+      security: [] 
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Successfully retrieved the list of authors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorListResponse'
+    post:
+      tags:
+        - Authors
+      summary: Create a new author
+      description: Add a new author to the system (Admin privileges required).
+      operationId: createAuthor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorRequest'
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdPathParam:
+      name: id
+      in: path
+      required: true
+      description: Unique identifier (UUID) of the resource
+      schema:
+        type: string
+        format: uuid
+    PageParam:
+      name: page
+      in: query
+      description: The page number to retrieve
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of items per page
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+
+  responses:
+    BadRequestError:
+      description: Invalid input data (Validation Error)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnauthorizedError:
+      description: Missing or invalid Authentication Token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenError:
+      description: Access denied (e.g., standard user attempting to access admin endpoints)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundError:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Unexpected internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Validation Failed"
+        details:
+          type: array
+          description: List of specific field validation errors (if applicable)
+          items:
+            type: string
+          example: ["title must not be empty", "price must be a positive number"]
+
+    PaginationMeta:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+          example: 150
+        itemCount:
+          type: integer
+          example: 10
+        itemsPerPage:
+          type: integer
+          example: 10
+        totalPages:
+          type: integer
+          example: 15
+        currentPage:
+          type: integer
+          example: 1
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "admin@example.com"
+        password:
+          type: string
+          format: password
+          minLength: 6
+          example: "secret123"
+
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        tokenType:
+          type: string
+          example: "Bearer"
+        expiresIn:
+          type: integer
+          description: Token expiration time in seconds
+          example: 3600
+
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        title:
+          type: string
+          example: "Clean Code"
+        isbn:
+          type: string
+          example: "978-0132350884"
+        price:
+          type: number
+          format: double
+          example: 45.99
+        publishDate:
+          type: string
+          format: date
+          example: "2008-08-01"
+        authorId:
+          type: string
+          format: uuid
+        categoryId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    BookRequest:
+      type: object
+      required:
+        - title
+        - isbn
+        - price
+        - authorId
+        - categoryId
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: "Clean Code"
+        isbn:
+          type: string
+          minLength: 10
+          maxLength: 13
+          example: "9780132350884"
+        price:
+          type: number
+          format: double
+          minimum: 0
+          example: 45.99
+        publishDate:
+          type: string
+          format: date
+          example: "2008-08-01"
+        authorId:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        categoryId:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440001"
+
+    BookListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    Author:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "Robert C. Martin"
+        biography:
+          type: string
+          example: "Uncle Bob is a software engineer..."
+        birthDate:
+          type: string
+          format: date
+          example: "1952-12-05"
+
+    AuthorRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+        biography:
+          type: string
+          maxLength: 2000
+        birthDate:
+          type: string
+          format: date
+
+    AuthorListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
