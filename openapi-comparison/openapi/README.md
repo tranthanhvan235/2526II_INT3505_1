@@ -29,8 +29,8 @@ npx openapi-generator-cli generate \
 ```bash
 npx openapi-generator-cli generate \
   -i openapi.yaml \
-  -g javascript \
-  -o client-js
+  -g python \
+  -o client-python
 
 cd client-python
 
