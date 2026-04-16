@@ -1,0 +1,747 @@
+openapi: 3.0.3
+info:
+  contact:
+    email: dev_team_6@soa.com
+    name: Team 6
+  description: "RESTful API for the Book Management application. Supports managing\
+    \ Books, Authors, Categories, and User Authentication (JWT). This documentation\
+    \ is highly detailed and structurally optimized for automatic backend code generation\
+    \ (Spring Boot, NestJS, Go, Python, etc.)."
+  title: Book Management API
+  version: 1.0.0
+servers:
+- description: Local Development Server
+  url: http://localhost:8080/api/v1
+- description: Staging Server
+  url: https://staging.example.com/api/v1
+security:
+- bearerAuth: []
+tags:
+- description: Authentication and Authorization operations
+  name: Auth
+- description: Book management operations
+  name: Books
+- description: Author management operations
+  name: Authors
+paths:
+  /auth/login:
+    post:
+      description: Authenticate using email and password to receive a JWT Access Token.
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+          description: Successfully authenticated
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Authentication Token
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid input data (Validation Error)
+      security: []
+      summary: User Login
+      tags:
+      - Auth
+      x-openapi-router-controller: openapi_server.controllers.auth_controller
+  /authors:
+    get:
+      description: Retrieve a paginated list of authors.
+      operationId: get_authors
+      parameters:
+      - description: The page number to retrieve
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+        style: form
+      - description: Number of items per page
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorListResponse"
+          description: Successfully retrieved the list of authors
+      security: []
+      summary: Get all authors
+      tags:
+      - Authors
+      x-openapi-router-controller: openapi_server.controllers.authors_controller
+    post:
+      description: Add a new author to the system (Admin privileges required).
+      operationId: create_author
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+          description: Successfully created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid input data (Validation Error)
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Authentication Token
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Access denied (e.g., standard user attempting to access admin\
+            \ endpoints)"
+      summary: Create a new author
+      tags:
+      - Authors
+      x-openapi-router-controller: openapi_server.controllers.authors_controller
+  /books:
+    get:
+      description: Retrieve a paginated list of books with search and filter capabilities.
+      operationId: get_books
+      parameters:
+      - description: The page number to retrieve
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+        style: form
+      - description: Number of items per page
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          type: integer
+        style: form
+      - description: Search by book title or ISBN
+        explode: true
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Filter books by Category ID
+        explode: true
+        in: query
+        name: categoryId
+        required: false
+        schema:
+          format: uuid
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookListResponse"
+          description: Successfully retrieved the list of books
+      security: []
+      summary: Get all books
+      tags:
+      - Books
+      x-openapi-router-controller: openapi_server.controllers.books_controller
+    post:
+      description: Add a new book to the catalog (Admin privileges required).
+      operationId: create_book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Successfully created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid input data (Validation Error)
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Authentication Token
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Access denied (e.g., standard user attempting to access admin\
+            \ endpoints)"
+      summary: Create a new book
+      tags:
+      - Books
+      x-openapi-router-controller: openapi_server.controllers.books_controller
+  /books/{id}:
+    delete:
+      description: Remove a book from the system completely (Admin privileges required).
+      operationId: delete_book
+      parameters:
+      - description: Unique identifier (UUID) of the resource
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Successfully deleted (No content returned)
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Authentication Token
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Access denied (e.g., standard user attempting to access admin\
+            \ endpoints)"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: The requested resource was not found
+      summary: Delete a book
+      tags:
+      - Books
+      x-openapi-router-controller: openapi_server.controllers.books_controller
+    get:
+      description: Retrieve detailed information of a specific book by its ID.
+      operationId: get_book_by_id
+      parameters:
+      - description: Unique identifier (UUID) of the resource
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Successfully retrieved book details
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: The requested resource was not found
+      security: []
+      summary: Get book details
+      tags:
+      - Books
+      x-openapi-router-controller: openapi_server.controllers.books_controller
+    put:
+      description: Update information of an existing book by its ID (Admin privileges
+        required).
+      operationId: update_book
+      parameters:
+      - description: Unique identifier (UUID) of the resource
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+          description: Successfully updated
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Invalid input data (Validation Error)
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Missing or invalid Authentication Token
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: "Access denied (e.g., standard user attempting to access admin\
+            \ endpoints)"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: The requested resource was not found
+      summary: Update a book
+      tags:
+      - Books
+      x-openapi-router-controller: openapi_server.controllers.books_controller
+components:
+  parameters:
+    IdPathParam:
+      description: Unique identifier (UUID) of the resource
+      explode: false
+      in: path
+      name: id
+      required: true
+      schema:
+        format: uuid
+        type: string
+      style: simple
+    PageParam:
+      description: The page number to retrieve
+      explode: true
+      in: query
+      name: page
+      required: false
+      schema:
+        default: 1
+        minimum: 1
+        type: integer
+      style: form
+    LimitParam:
+      description: Number of items per page
+      explode: true
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 10
+        maximum: 100
+        minimum: 1
+        type: integer
+      style: form
+  responses:
+    BadRequestError:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Invalid input data (Validation Error)
+    UnauthorizedError:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Missing or invalid Authentication Token
+    ForbiddenError:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: "Access denied (e.g., standard user attempting to access admin\
+        \ endpoints)"
+    NotFoundError:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: The requested resource was not found
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Unexpected internal server error
+  schemas:
+    Error:
+      example:
+        code: 400
+        details:
+        - title must not be empty
+        - price must be a positive number
+        message: Validation Failed
+      properties:
+        code:
+          example: 400
+          title: code
+          type: integer
+        message:
+          example: Validation Failed
+          title: message
+          type: string
+        details:
+          description: List of specific field validation errors (if applicable)
+          example:
+          - title must not be empty
+          - price must be a positive number
+          items:
+            type: string
+          title: details
+          type: array
+      title: Error
+      type: object
+    PaginationMeta:
+      example:
+        totalItems: 150
+        itemsPerPage: 10
+        totalPages: 15
+        currentPage: 1
+        itemCount: 10
+      properties:
+        totalItems:
+          example: 150
+          title: totalItems
+          type: integer
+        itemCount:
+          example: 10
+          title: itemCount
+          type: integer
+        itemsPerPage:
+          example: 10
+          title: itemsPerPage
+          type: integer
+        totalPages:
+          example: 15
+          title: totalPages
+          type: integer
+        currentPage:
+          example: 1
+          title: currentPage
+          type: integer
+      title: PaginationMeta
+      type: object
+    LoginRequest:
+      example:
+        password: secret123
+        email: admin@example.com
+      properties:
+        email:
+          example: admin@example.com
+          format: email
+          title: email
+          type: string
+        password:
+          example: secret123
+          format: password
+          minLength: 6
+          title: password
+          type: string
+      required:
+      - email
+      - password
+      title: LoginRequest
+      type: object
+    AuthResponse:
+      example:
+        expiresIn: 3600
+        accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        tokenType: Bearer
+      properties:
+        accessToken:
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          title: accessToken
+          type: string
+        tokenType:
+          example: Bearer
+          title: tokenType
+          type: string
+        expiresIn:
+          description: Token expiration time in seconds
+          example: 3600
+          title: expiresIn
+          type: integer
+      title: AuthResponse
+      type: object
+    Book:
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        price: 45.99
+        isbn: 978-0132350884
+        publishDate: 2008-08-01
+        id: 123e4567-e89b-12d3-a456-426614174000
+        title: Clean Code
+        authorId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        categoryId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+      properties:
+        id:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          format: uuid
+          title: id
+          type: string
+        title:
+          example: Clean Code
+          title: title
+          type: string
+        isbn:
+          example: 978-0132350884
+          title: isbn
+          type: string
+        price:
+          example: 45.99
+          format: double
+          title: price
+          type: number
+        publishDate:
+          example: 2008-08-01
+          format: date
+          title: publishDate
+          type: string
+        authorId:
+          format: uuid
+          title: authorId
+          type: string
+        categoryId:
+          format: uuid
+          title: categoryId
+          type: string
+        createdAt:
+          format: date-time
+          title: createdAt
+          type: string
+        updatedAt:
+          format: date-time
+          title: updatedAt
+          type: string
+      title: Book
+      type: object
+    BookRequest:
+      example:
+        price: 45.99
+        isbn: "9780132350884"
+        publishDate: 2008-08-01
+        title: Clean Code
+        authorId: 550e8400-e29b-41d4-a716-446655440000
+        categoryId: 550e8400-e29b-41d4-a716-446655440001
+      properties:
+        title:
+          example: Clean Code
+          maxLength: 255
+          minLength: 1
+          title: title
+          type: string
+        isbn:
+          example: "9780132350884"
+          maxLength: 13
+          minLength: 10
+          title: isbn
+          type: string
+        price:
+          example: 45.99
+          format: double
+          minimum: 0
+          title: price
+          type: number
+        publishDate:
+          example: 2008-08-01
+          format: date
+          title: publishDate
+          type: string
+        authorId:
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+          title: authorId
+          type: string
+        categoryId:
+          example: 550e8400-e29b-41d4-a716-446655440001
+          format: uuid
+          title: categoryId
+          type: string
+      required:
+      - authorId
+      - categoryId
+      - isbn
+      - price
+      - title
+      title: BookRequest
+      type: object
+    BookListResponse:
+      example:
+        data:
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          price: 45.99
+          isbn: 978-0132350884
+          publishDate: 2008-08-01
+          id: 123e4567-e89b-12d3-a456-426614174000
+          title: Clean Code
+          authorId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          categoryId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          updatedAt: 2000-01-23T04:56:07.000+00:00
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          price: 45.99
+          isbn: 978-0132350884
+          publishDate: 2008-08-01
+          id: 123e4567-e89b-12d3-a456-426614174000
+          title: Clean Code
+          authorId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          categoryId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          updatedAt: 2000-01-23T04:56:07.000+00:00
+        meta:
+          totalItems: 150
+          itemsPerPage: 10
+          totalPages: 15
+          currentPage: 1
+          itemCount: 10
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/Book"
+          title: data
+          type: array
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+      title: BookListResponse
+      type: object
+    Author:
+      example:
+        name: Robert C. Martin
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        biography: Uncle Bob is a software engineer...
+        birthDate: 1952-12-05
+      properties:
+        id:
+          format: uuid
+          title: id
+          type: string
+        name:
+          example: Robert C. Martin
+          title: name
+          type: string
+        biography:
+          example: Uncle Bob is a software engineer...
+          title: biography
+          type: string
+        birthDate:
+          example: 1952-12-05
+          format: date
+          title: birthDate
+          type: string
+      title: Author
+      type: object
+    AuthorRequest:
+      example:
+        name: name
+        biography: biography
+        birthDate: 2000-01-23
+      properties:
+        name:
+          maxLength: 100
+          minLength: 2
+          title: name
+          type: string
+        biography:
+          maxLength: 2000
+          title: biography
+          type: string
+        birthDate:
+          format: date
+          title: birthDate
+          type: string
+      required:
+      - name
+      title: AuthorRequest
+      type: object
+    AuthorListResponse:
+      example:
+        data:
+        - name: Robert C. Martin
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          biography: Uncle Bob is a software engineer...
+          birthDate: 1952-12-05
+        - name: Robert C. Martin
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          biography: Uncle Bob is a software engineer...
+          birthDate: 1952-12-05
+        meta:
+          totalItems: 150
+          itemsPerPage: 10
+          totalPages: 15
+          currentPage: 1
+          itemCount: 10
+      properties:
+        data:
+          items:
+            $ref: "#/components/schemas/Author"
+          title: data
+          type: array
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+      title: AuthorListResponse
+      type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+      x-bearerInfoFunc: openapi_server.controllers.security_controller.info_from_bearerAuth
