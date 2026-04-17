@@ -49,6 +49,47 @@ venv/
 .python-version
 .pytest_cache
 
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (if using npm for dev tools)
+node_modules/
+package-lock.json
+
+# OpenAPI Generator
+.openapi-generator-ignore
+.openapi-generator/
+
+
 # Translations
 *.mo
 *.pot
