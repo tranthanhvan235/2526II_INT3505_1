@@ -1,26 +1,31 @@
 from flask import request, jsonify
+from marshmallow import ValidationError
 from . import v1
+from .schemas import (
+    CreatePaymentRequestV1,
+    PaymentResponseV1,
+)
+
+req_schema = CreatePaymentRequestV1()
+res_schema = PaymentResponseV1()
 
 @v1.route('/payments', methods=['POST'])
 def create_payment():
-    data = request.get_json()
+    try:
+        # validate + deserialize input
+        data = req_schema.load(
+            request.get_json()
+        )
+    except ValidationError as err:
+        return jsonify(err.messages), 400
 
-    amount   = data.get('amount')       
-    currency = data.get('currency')     
-    card_no  = data.get('card_number') 
-
-    return jsonify({
+    result = {
         'payment_id': 'pay_abc123',
-        'status':     'success',    
-        'amount':     amount,        
-        'currency':   currency,
-    }), 200
-
-
-@v1.route('/payments/<payment_id>', methods=['GET'])
-def get_payment(payment_id):
-    return jsonify({
-        'payment_id': payment_id,
         'status':     'success',
-        'amount':     150000,
-    }), 200
+        'amount':     data['amount'],
+        'currency':   data['currency'],
+    }
+    # serialize output
+    return jsonify(
+        res_schema.dump(result)
+    ), 200

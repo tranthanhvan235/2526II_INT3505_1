@@ -1,46 +1,35 @@
-from flask import request, jsonify, abort
+from flask import request, jsonify
+from marshmallow import ValidationError
 from datetime import datetime, timezone
 import uuid
 from . import v2
+from .schemas import (
+    CreatePaymentRequestV2,
+    PaymentResponseV2,
+)
+
+req_schema = CreatePaymentRequestV2()
+res_schema = PaymentResponseV2()
 
 @v2.route('/payments', methods=['POST'])
 def create_payment():
-    data = request.get_json()
+    try:
+        data = req_schema.load(
+            request.get_json()
+        )
+    except ValidationError as err:
+        return jsonify(err.messages), 400
 
-    idempotency_key = data.get('idempotency_key')
-    if not idempotency_key:
-        abort(400, description='idempotency_key is required')
-
-    amount_obj = data.get('amount', {})
-    value    = amount_obj.get('value')   
-    currency = amount_obj.get('currency') 
-
-    pm = data.get('payment_method', {})
-    token = pm.get('token')
-
-    now = datetime.now(timezone.utc).isoformat()
-
-    return jsonify({
-        'id':     'pay_' + uuid.uuid4().hex[:8],
+    result = {
+        'id': 'pay_' + uuid.uuid4().hex[:8],
         'status': {
             'code':    'succeeded',
-            'message': 'Payment processed successfully',
+            'message': 'Payment processed',
         },
-        'amount': {
-            'value':    value,
-            'currency': currency,
-        },
-        'idempotency_key': idempotency_key,
-        'created_at':      now,
-    }), 201
-
-
-@v2.route('/payments/<payment_id>', methods=['GET'])
-def get_payment(payment_id):
-    now = datetime.now(timezone.utc).isoformat()
-    return jsonify({
-        'id':        payment_id,
-        'status':    {'code': 'succeeded', 'message': 'Paid'},
-        'amount':    {'value': '150000.00', 'currency': 'VND'},
-        'created_at': now,
-    }), 200
+        'amount':          data['amount'],
+        'idempotency_key': data['idempotency_key'],
+        'created_at':      datetime.now(timezone.utc),
+    }
+    return jsonify(
+        res_schema.dump(result)
+    ), 201

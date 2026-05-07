@@ -1,7 +1,7 @@
 from flask import Flask
 from api.v1 import v1 as api_v1
 from api.v2 import v2 as api_v2
-from Lecture9.payment_api.middleware.deprecation import add_deprecation_headers
+from middleware.deprecation import add_deprecation_headers
 
 app = Flask(__name__)
 
