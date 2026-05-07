@@ -34,7 +34,7 @@ class CreatePaymentRequestV2(Schema):
     metadata        = fields.Dict(keys=fields.Str(), load_default={})
 
     @validates('idempotency_key')
-    def validate_idempotency_key(self, value):
+    def validate_idempotency_key(self, value, **kwargs):
         try:
             uuid.UUID(value)          
         except ValueError:
