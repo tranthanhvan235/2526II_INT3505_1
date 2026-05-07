@@ -1,0 +1,18 @@
+curl -i -X POST http://localhost:5000/api/v1/payments \
+  -H "Content-Type: application/json" \
+  -d '{"amount":150000,"currency":"VND","card_number":"4111...","customer_id":"cus_123"}'
+
+
+
+curl -X POST http://localhost:5000/api/v2/payments \
+  -H "Content-Type: application/json" \
+  -d '{"amount": {"value": "abc", "currency": "XYZ"}}'
+
+
+curl -X POST http://localhost:5000/api/v2/payments \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": {"value": "150000.00", "currency": "VND"},
+    "payment_method": {"type": "card", "token": "tok_xyz"},
+    "idempotency_key": "550e8400-e29b-41d4-a716-446655440000"
+  }'
