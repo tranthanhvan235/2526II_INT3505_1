@@ -7,21 +7,11 @@ header_bp = Blueprint('header', __name__, url_prefix='/api/header')
 
 # ── Helper ────────────────────────────────────────────────
 def get_version():
-    """Đọc version từ header X-API-Version (mặc định là 1)"""
     return request.headers.get('X-API-Version', '1').strip()
 
 # ── Routes ────────────────────────────────────────────────
 @header_bp.route('/payments', methods=['POST'])
 def create_payment():
-    """
-    [Chiến lược 2 — Header versioning]
-    POST /api/header/payments
-    Header: X-API-Version: 1   →  logic v1
-    Header: X-API-Version: 2   →  logic v2
-
-    Ưu điểm: URL sạch, không đổi khi nâng version
-    Nhược điểm: Khó test bằng browser, ít trực quan hơn
-    """
     version = get_version()
     data    = request.get_json() or {}
 

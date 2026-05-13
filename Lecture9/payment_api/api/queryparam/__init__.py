@@ -6,20 +6,11 @@ query_bp = Blueprint('queryparam', __name__, url_prefix='/api/query')
 
 # ── Helper ────────────────────────────────────────────────
 def get_version():
-    """Đọc version từ query param ?version=  (mặc định là 1)"""
     return request.args.get('version', '1').strip()
 
 # ── Routes ────────────────────────────────────────────────
 @query_bp.route('/payments', methods=['POST'])
 def create_payment():
-    """
-    [Chiến lược 3 — Query Param versioning]
-    POST /api/query/payments?version=1   →  logic v1
-    POST /api/query/payments?version=2   →  logic v2
-
-    Ưu điểm: Dễ test thẳng trên browser, backward compatible
-    Nhược điểm: Query param không semantic, có thể bị CDN/proxy bỏ qua
-    """
     version = get_version()
     data    = request.get_json() or {}
 
