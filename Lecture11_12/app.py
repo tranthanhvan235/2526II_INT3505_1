@@ -14,6 +14,8 @@ db.init_app(app)
 
 # Register Blueprints
 app.register_blueprint(crud_bp, url_prefix='/api')
+from api.query import query_bp
+app.register_blueprint(query_bp, url_prefix='/api/query')
 
 @app.route('/', methods=['GET'])
 def index():
