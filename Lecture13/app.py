@@ -23,6 +23,10 @@ PLANS = {
 def home():
     return render_template("index.html", analytics=api_analytics, users=users_db)
 
+@app.route("/canvas")
+def canvas():
+    return render_template("canvas.html")
+
 @app.route("/register", methods=["POST"])
 def register():
     username = request.form.get("username")
